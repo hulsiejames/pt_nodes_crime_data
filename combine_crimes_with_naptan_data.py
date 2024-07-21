@@ -79,9 +79,8 @@ def read_naptan_data(
         return geo_stop_data
         
         
-
 def read_and_create_geo_data(
-        data_dir: pathlib.Path(),
+        data_dir: pathlib.Path,
         x_col: str,
         y_col: str,
         crs: str,
@@ -171,20 +170,22 @@ def create_geospatial_dataset(
         crs: str,
     ) -> gpd.GeoDataFrame:
     
+    # Create geometry from coordinates
     df["geometry"] = gpd.points_from_xy(
         x=df[x_col],
         y=df[y_col],
         crs=crs,
         ) 
     
+    # Create GeoDataFrame
     geo_df = gpd.GeoDataFrame(
         data=df,
         geometry=df["geometry"],
         crs=crs,
         )
     
-    if geo_df.crs != "EPSG:4326":
-        geo_df = geo_df.to_crs("EPSG:4326")
+    if geo_df.crs != crs:
+        geo_df = geo_df.to_crs(crs)
     
     return geo_df
 
@@ -282,8 +283,6 @@ def main():
         geom_col=GEOMETRY_COL,
         )    
     
-    #### Sub-set data to North
-    #north_crime
     
     #### Perform spatial join
     
